@@ -18,13 +18,13 @@ export default function PhotoGrid() {
 
   return (
     <>
-      {/* The Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pb-20">
         {photos.map((photo) => (
-          <div 
+          <button 
             key={photo.id} 
+            type="button"
             onClick={() => setSelectedPhoto(photo.url)}
-            className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-xl transition-all duration-300 ring-4 ring-white cursor-zoom-in"
+            className="group relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-xl transition-all duration-300 ring-4 ring-white cursor-zoom-in focus:outline-none focus:ring-rose-400"
           >
             <img 
               src={photo.url} 
@@ -33,7 +33,7 @@ export default function PhotoGrid() {
               loading="lazy"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-          </div>
+          </button>
         ))}
         
         {photos.length === 0 && (
@@ -45,23 +45,24 @@ export default function PhotoGrid() {
         )}
       </div>
 
-      {/* The Lightbox (Full Screen View) */}
+      {/* Lightbox / Full Screen View */}
       {selectedPhoto && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 transition-opacity duration-300"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-in fade-in duration-200"
           onClick={() => setSelectedPhoto(null)}
         >
           {/* Close Button */}
-          <button className="absolute top-6 right-6 text-white/80 hover:text-white text-4xl font-light">
-            &times;
+          <button className="absolute top-5 right-5 text-white/80 hover:text-white p-2">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
 
-          {/* Big Image */}
           <img 
             src={selectedPhoto} 
             alt="Full screen view" 
-            className="max-h-[90vh] max-w-[95vw] object-contain rounded-lg shadow-2xl"
-            onClick={(e) => e.stopPropagation()} // Prevents closing if you click the image itself
+            className="max-h-[85vh] max-w-[95vw] object-contain rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()} 
           />
         </div>
       )}
