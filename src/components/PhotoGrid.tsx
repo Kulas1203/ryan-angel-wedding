@@ -5,13 +5,12 @@ import { db } from "../lib/firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
 export default function PhotoGrid() {
-  const [photos, setPhotos] = useState([]);
+  // FIX: We added <any[]> here so Vercel knows it is a list of items
+  const [photos, setPhotos] = useState<any[]>([]);
 
   useEffect(() => {
-    // This query says: "Give me all photos, newest first"
     const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
 
-    // This listener stays open and updates automatically!
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedPhotos = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -24,8 +23,8 @@ export default function PhotoGrid() {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl mt-10 px-4">
-      {photos.map((photo: any) => (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl mt-10 px-4 pb-20">
+      {photos.map((photo) => (
         <div key={photo.id} className="relative aspect-square overflow-hidden rounded-xl shadow-md">
           <img 
             src={photo.url} 
