@@ -1,9 +1,10 @@
 import UploadButton from "../components/UploadButton";
 import PhotoGrid from "../components/PhotoGrid";
+import WeddingQR from "../components/WeddingQR"; // Import the new component
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#fdf2f8]"> {/* Soft pink background */}
+    <main className="min-h-screen bg-[#fdf2f8]">
       <div className="flex flex-col items-center pt-16 pb-10 px-4 max-w-6xl mx-auto">
         
         {/* Header */}
@@ -20,9 +21,14 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Upload Section (No Countdown) */}
+        {/* Upload Section */}
         <div className="z-10 w-full mb-16">
           <UploadButton />
+        </div>
+
+        {/* The Custom QR Code (New!) */}
+        <div className="mb-16">
+          <WeddingQR />
         </div>
 
         {/* The Gallery */}
