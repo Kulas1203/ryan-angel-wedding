@@ -1,12 +1,13 @@
-"use client"; 
+"use client";
 
 import { useState } from "react";
-import { storage, db } from "../lib/firebase"; 
+import { storage, db } from "../lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function UploadButton() {
   const [uploading, setUploading] = useState(false);
+  const [caption, setCaption] = useState("");
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -20,47 +21,43 @@ export default function UploadButton() {
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
 
+      // Save photo WITH the caption/wish
       await addDoc(collection(db, "photos"), {
         url: downloadURL,
+        caption: caption, // This adds the message
         createdAt: serverTimestamp(),
       });
 
-      // Simple browser alert is fine for now, or you could use a toast later
-      alert("Photo shared! Thank you! 🥂");
+      setCaption(""); // Clear the text box
+      alert("Sent with love! ❤️");
     } catch (error) {
       console.error("Error uploading:", error);
-      alert("Oops! Something went wrong. Try again.");
+      alert("Oops! Something went wrong.");
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className="relative group">
-      {/* Glowing effect behind the button */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-rose-400 to-pink-600 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+    <div className="flex flex-col items-center gap-4 w-full max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-xl border border-rose-100">
       
+      {/* Message Input */}
+      <input
+        type="text"
+        placeholder="Write a wish for the couple..."
+        value={caption}
+        onChange={(e) => setCaption(e.target.value)}
+        className="w-full px-4 py-3 rounded-xl border border-rose-200 bg-rose-50/50 focus:outline-none focus:ring-2 focus:ring-rose-300 text-rose-900 placeholder:text-rose-300 text-center font-serif"
+      />
+
+      {/* Upload Button */}
       <label className={`
-        relative flex items-center justify-center px-8 py-4 
-        bg-white text-rose-600 font-bold text-lg rounded-full 
-        cursor-pointer shadow-xl transition transform hover:-translate-y-1 hover:scale-105 active:scale-95
-        border-2 border-rose-100
+        relative w-full flex items-center justify-center px-8 py-3 
+        bg-gradient-to-r from-rose-400 to-pink-500 text-white font-bold text-lg rounded-xl
+        cursor-pointer shadow-md transition transform hover:-translate-y-0.5 active:scale-95
         ${uploading ? "opacity-75 cursor-wait" : ""}
       `}>
-        {uploading ? (
-          <span className="flex items-center gap-2">
-            <svg className="animate-spin h-5 w-5 text-rose-500" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-            Uploading...
-          </span>
-        ) : (
-          <span className="flex items-center gap-2">
-            📸 Share a Photo
-          </span>
-        )}
-        
+        {uploading ? "Sending..." : "📸 Snap & Send"}
         <input 
           type="file" 
           accept="image/*" 
